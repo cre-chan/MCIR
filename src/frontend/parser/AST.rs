@@ -1,7 +1,7 @@
 use crate::frontend::Semantics::Symbol;
 
-//created so as to simplify the list definition
-enum List<T>{
+//created so as to simplify the list definition. Not recommended.
+pub enum List<T>{
     Cons(T,Box<Self>),
     Nil
 }
@@ -15,14 +15,14 @@ pub type fieldlist=List<field>;
 pub type explist=List<exp>;
 
 
-//! syntactical structure for the left values.
+/// syntactical structure for the left values.
 pub enum lvalue{
     Simple{sym:Symbol},//sym
     Field{var:Box<lvalue>,field:Symbol},//var.field
     Subscript{var:Box<lvalue>,index:Box<exp>}//var[index]
 }
 
-//! the main structure of tiger lang
+/// the main structure of tiger lang
 pub enum exp{
     Var{var:Box<lvalue>},//var
     Nil,//Nil
@@ -41,25 +41,25 @@ pub enum exp{
     Array{typ:Symbol,size:Box<exp>,init:Box<exp>}//
 }
 
-//! the declaration of functions, variables and types are divided into consecutive blocks.
-//! relative declarations are placed together.
+/// the declaration of functions, variables and types are divided into consecutive blocks.
+/// relative declarations are placed together.
 pub enum decl{
     Func{function:fundeclist},//consecutive definition of functions
     Var{var:Symbol,typ:Symbol,init:Box<exp>},//var var:typ=init
     Type{typs:NameTyList}//consecutive definition of types
 }
 
-//! corresponds to type variable
+/// corresponds to type variable
 pub enum typ{
     Namely{name:Symbol},//alias for a type
     Record{fields:fieldlist},//record type
     Array{array:Symbol}
 }
 
-//! basic part of struct definition
+/// basic part of struct definition
 pub struct field{ name:Symbol,typ:Symbol }//name:typ
 
-//! function definition
+/// function definition
 pub struct fundec{
     name:Symbol,
     params:fieldlist,
@@ -67,16 +67,17 @@ pub struct fundec{
     body:exp
 }
 
-//! connect a symbol with a type
+/// connect a symbol with a type
 pub struct namety{
     name:Symbol,
     ty:typ
 }
 
-//! basic parts of a structure value
+/// basic parts of a structure value
 pub struct  efield{name:Symbol,expr:exp}
 
-//! namely.
+
+/// namely.
 pub enum Operator {
     plus,
     minus,

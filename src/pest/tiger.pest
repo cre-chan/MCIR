@@ -1,0 +1,133 @@
+// ----the start of basic token definition----
+
+//identifier
+identifier=@{
+    ASCII_ALPHA~ASCII_ALPHANUMERIC*
+    }
+
+// interger literal
+interger=@{
+    ASCII_DIGIT+
+}
+
+// rule for string literal
+string=${
+    "\""~inner~"\""
+}
+inner=@{char*}
+char={
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+}
+
+compareop={
+    "="
+    |"<>"
+    |">"
+    |"<"
+    |">="
+    |"<="
+}
+
+boolop={
+    "&"
+    |"|"
+}
+
+plusorminus={
+    "+"
+    |"-"
+}
+
+timesordiv={
+    "*"
+    |"/"
+}
+
+// ----end of basic token definition----
+
+//Declaration for variable, type and function
+declist={
+    decl~declist
+    |""
+}
+decl={
+    tydec|
+    vardec|
+    fundec
+}
+tydec={
+    "type"~identifier~"="~typ
+}
+typ={
+    identifier|
+    "{"~fieldlist~"}"|
+    "array"~"of"~identifier
+}
+fieldlist={//NOT CORRECT!!
+    field~","~fieldlist
+    |field
+}
+field={
+    identifier~":"~identifier
+}
+vardec={
+    "var"~identifier~":="~exp
+    |"var"~identifier~":"~identifier~":="~exp
+}
+fundec={
+    "function"~identifier~"("~fieldlist~")"~":"~identifier~"="~exp
+    |"function"~identifier~"("~fieldlist~")"~"="~exp
+}
+
+//left values
+lvalue={
+    identifier~"."~identifier
+    |identifier~"["~exp~"]"
+    |identifier
+}
+
+//expressions
+exp={
+    logicterm~("|"~logicterm)*
+}
+
+logicterm={
+    logicfactor~("|"~logicfactor)*
+}
+
+logicfactor={
+    compareterm~compareop~compareterm
+    |compareterm
+}
+
+compareterm={
+    term~(plusorminus~term)*
+}
+
+term={
+    factor~(timesordiv~factor)*
+}
+
+factor={
+    identifier~"("~explist~")"//function call
+    |lvalue//named variable
+    |"nil"
+    |interger
+    |string
+}
+
+//used in function call
+explist={
+    exp~(","~exp)*
+    |""
+
+}
+
+program={
+    SOI~exp~EOI
+}
+
+//ignore space, tab and end of lines
+WHITESPACE=_{" "|"\t"|"\r"|"\n"}
