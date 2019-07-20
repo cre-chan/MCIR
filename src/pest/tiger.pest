@@ -3,7 +3,7 @@
 //identifier
 identifier=@{
     ASCII_ALPHA~ASCII_ALPHANUMERIC*
-    }
+}
 
 // interger literal
 interger=@{
@@ -47,7 +47,7 @@ timesordiv={
 
 // ----end of basic token definition----
 
-//Declaration for variable, type and function
+//Declaration for variables, types and functions
 declist={
     decl~declist
     |""
@@ -81,6 +81,9 @@ fundec={
     |"function"~identifier~"("~fieldlist~")"~"="~exp
 }
 
+
+//All kinds of expressions
+
 //left values
 lvalue={
     identifier~"."~identifier
@@ -90,7 +93,11 @@ lvalue={
 
 //expressions
 exp={
-    logicterm~("|"~logicterm)*
+    assign_exp
+    |let_exp
+    |while_exp
+    |for_exp
+    |logicterm~("|"~logicterm)*//the generator contains the sole identifier situation, so the precedence must be lower
 }
 
 logicterm={
@@ -110,20 +117,72 @@ term={
     factor~(timesordiv~factor)*
 }
 
+//TODO: Add an unary operator, adjust the order of generators
 factor={
     identifier~"("~explist~")"//function call
+    |record
+    |array
     |lvalue//named variable
     |"nil"
     |interger
     |string
+    |"("~exp~")"
+    |"break"
+    |if_exp
+    |"-"~factor
 }
 
-//used in function call
+//used in function call, used to fill the actual parameters
 explist={
     exp~(","~exp)*
     |""
-
 }
+
+//consecutive expressions
+exp_seq={
+    (exp~";")+~exp
+}
+
+// Start of Record syntax definition
+efield={
+    identifier~"="~exp
+}
+efield_list={
+    efield~(","~efield)*
+}
+record={
+    identifier~"{"~(efield_list)~"}"
+}
+// End of Record syntax definition
+
+
+// Start of array literal
+array={
+    identifier~"["~exp~"]"~"of"~identifier
+}
+// End of array literal
+
+
+assign_exp={
+    identifier~":="~exp
+}
+
+if_exp={
+    "if"~exp~"then"~exp~"else"~exp
+}
+
+while_exp={
+    "while"~exp~"do"~exp
+}
+
+for_exp={
+    "for"~identifier~":="~exp~"to"~exp~"do"~exp
+}
+
+let_exp={
+    "let"~declist~"in"~exp_seq~"end"
+}
+
 
 program={
     SOI~exp~EOI

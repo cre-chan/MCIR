@@ -79,15 +79,15 @@ pub struct  efield{name:Symbol,expr:exp}
 
 /// namely.
 pub enum Operator {
-    plus,
-    minus,
-    times,
-    div,
-    eq,
-    neq,
-    lt,
-    le,
-    gt,
-    ge
+    Plus,
+    Minus,
+    Times,
+    Div,
+    Eq,
+    Neq,
+    LT,
+    LE,
+    GT,
+    GE
 }
 
