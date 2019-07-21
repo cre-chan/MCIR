@@ -30,6 +30,8 @@ compareop={
     |"<"
 }
 
+// The boolop will be translated into if-else clause
+// So no corresponding operators. And no directly parsing
 boolop={
     "&"
     |"|"
