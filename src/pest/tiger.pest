@@ -2,7 +2,7 @@
 
 //identifier
 identifier=@{
-    ASCII_ALPHA~ASCII_ALPHANUMERIC*
+    (ASCII_ALPHA|"_")~(ASCII_ALPHANUMERIC|"_")*
 }
 
 // interger literal
@@ -14,20 +14,20 @@ interger=@{
 string=${
     "\""~inner~"\""
 }
-inner=@{char*}
+inner=${char*}
 char={
     !("\"" | "\\") ~ ANY
-    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
-    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+    | "\\" ~ ("\"" | "\\" | "n" | "t")
+    | "\\" ~ ASCII_OCT_DIGIT{3}
 }
 
 compareop={
     "="
     |"<>"
-    |">"
-    |"<"
     |">="
     |"<="
+    |">"
+    |"<"
 }
 
 boolop={
@@ -129,7 +129,6 @@ factor={
     |"("~exp~")"
     |"break"
     |if_exp
-    |"-"~factor
 }
 
 //used in function call, used to fill the actual parameters
@@ -138,15 +137,19 @@ explist={
     |""
 }
 
+
 //consecutive expressions
 exp_seq={
     (exp~";")+~exp
 }
 
+
+
 // Start of Record syntax definition
 efield={
     identifier~"="~exp
 }
+
 efield_list={
     efield~(","~efield)*
 }
@@ -166,7 +169,6 @@ array={
 assign_exp={
     identifier~":="~exp
 }
-
 if_exp={
     "if"~exp~"then"~exp~"else"~exp
 }
