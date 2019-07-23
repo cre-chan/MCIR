@@ -51,8 +51,7 @@ timesordiv={
 
 //Declaration for variables, types and functions
 declist={
-    decl~declist
-    |""
+    decl*
 }
 decl={
     tydec|
@@ -116,10 +115,13 @@ compareterm={
 }
 
 term={
-    factor~(timesordiv~factor)*
+    unary~(timesordiv~unary)*
 }
 
-//TODO: Add an unary operator, adjust the order of generators
+unary={
+    "-"?~factor
+}
+
 factor={
     identifier~"("~explist~")"//function call
     |record

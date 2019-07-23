@@ -7,7 +7,9 @@ use std::fmt::Debug;
 use super::AST::*;
 
 
-
+mod token;
+mod decl;
+mod expr;
 
 #[cfg(test)]
 mod tests{
@@ -52,7 +54,7 @@ mod tests{
 #[grammar="pest/tiger.pest"]
 pub struct TigerParser;
 
-mod token;
+
 
 #[derive(Debug)]
 //TODO: complete the ParserErr definition
@@ -63,7 +65,7 @@ pub enum ParserErr{
 
 
 //Our error type
-pub type ParseResult=Result<exp,ParserErr>;
+pub type ParseResult=Result<Expr,ParserErr>;
 use ParserErr::*;
 
 
@@ -71,5 +73,8 @@ use ParserErr::*;
 pub fn run(src:String)->ParseResult{
     Err(NotImplementedErr)
 }
+
+
+
 
 

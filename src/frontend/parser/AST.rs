@@ -15,36 +15,37 @@ pub type NameTyList=List<namety>;
 pub type Declist =List<decl>;
 pub type Fundeclist =List<fundec>;
 pub type Fieldlist =List<field>;
-pub type Explist =List<exp>;
+pub type Explist =List<Expr>;
 
 
 #[derive(Debug)]
+#[allow(non_camel_case_types)]
 /// syntactical structure for the left values.
 pub enum lvalue{
     Simple{sym:Symbol},//sym
     Field{var:Box<lvalue>,field:Symbol},//var.field
-    Subscript{var:Box<lvalue>,index:Box<exp>}//var[index]
+    Subscript{var:Box<lvalue>,index:Box<Expr>}//var[index]
 }
 
 
 #[derive(Debug)]
 /// the main structure of tiger lang
-pub enum exp{
+pub enum Expr {
     Var{var:Box<lvalue>},//var
     Nil,//Nil
     Int{i:i64},//i
     String{s:Symbol},//s
     Call{func:Symbol,args:Box<Explist>},//func(args)
-    Op{oper: Operator,lop:Box<exp>,rop:Box<exp>},//lop op rop
+    Op{oper: Operator,lop:Box<Expr>,rop:Box<Expr>},//lop op rop
     Record{typ:Symbol,fields:Box<EfieldList>},//typ{fields}
     Seq{seq:Box<Explist>},//Explist, a sequence of consecutive expressions
-    Assign{var:Box<lvalue>,expr:Box<exp>},//var:=Box<exp>
-    If{test:Box<exp>,then:Box<exp>,els:Box<exp>},//if test then Box<exp> else Box<exp>
-    While{test:Box<exp>,body:Box<exp>},//while test {Box<exp>}
+    Assign{var:Box<lvalue>,expr:Box<Expr>},//var:=Box<exp>
+    If{test:Box<Expr>,then:Box<Expr>,els:Box<Expr>},//if test then Box<exp> else Box<exp>
+    While{test:Box<Expr>,body:Box<Expr>},//while test {Box<exp>}
     Break,
-    For{var:Symbol,lo:Box<exp>,hi:Box<exp>,body:Box<exp>},//for var in lo..hi {Box<exp>}
-    Let{decs:Box<Declist>,body:Box<exp>},//let Declist in body
-    Array{typ:Symbol,size:Box<exp>,init:Box<exp>}//
+    For{var:Symbol,lo:Box<Expr>,hi:Box<Expr>,body:Box<Expr>},//for var in lo..hi {Box<exp>}
+    Let{decs:Box<Declist>,body:Box<Expr>},//let Declist in body
+    Array{typ:Symbol,size:Box<Expr>,init:Box<Expr>}//
 }
 
 
@@ -53,7 +54,7 @@ pub enum exp{
 /// relative declarations are placed together.
 pub enum decl{
     Func{function: Fundeclist },//consecutive definition of functions
-    Var{var:Symbol,typ:Symbol,init:Box<exp>},//var var:typ=init
+    Var{var:Symbol,typ:Symbol,init:Box<Expr>},//var var:typ=init
     Type{typs:NameTyList}//consecutive definition of types
 }
 
@@ -78,7 +79,7 @@ pub struct fundec{
     name:Symbol,
     params: Fieldlist,
     result:Symbol,
-    body:exp
+    body: Expr
 }
 
 
@@ -92,7 +93,7 @@ pub struct namety{
 
 #[derive(Debug)]
 /// basic parts of a structure value
-pub struct  efield{name:Symbol,expr:exp}
+pub struct  efield{name:Symbol,expr: Expr }
 
 
 #[derive(Debug)]
